@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bitvavo Pro Mode | Professional Trading</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* --- VARIABLES --- */
+        :root {
+            --bg-dark: #050505;
+            --card-bg: #0c0c0c;
+            --accent-blue: #0066ff; /* Warna Biru Modern */
+            --text-main: #ffffff;
+            --text-dim: #a0a0a0;
+            --border-color: #222222;
+            --transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        /* --- RESET & BASIC STYLES --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            line-height: 1.6;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* --- HEADER / NAVBAR --- */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 25px 5%;
+            background-color: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .logo { 
+            font-size: 1.4rem; 
+            font-weight: 700; 
+            letter-spacing: -0.5px;
+            display: flex; 
+            gap: 8px; 
+            color: white; 
+            z-index: 101; 
+        }
+        .logo span { color: var(--accent-blue); }
+        
+        .menu-icon { 
+            cursor: pointer; 
+            width: 28px; 
+            height: 18px; 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: space-between; 
+            z-index: 101;
+        }
+        .menu-icon div { 
+            height: 2px; 
+            background-color: white; 
+            width: 100%; 
+            transition: var(--transition); 
+            border-radius: 10px;
+        }
+        .menu-icon:hover div:nth-child(2) { width: 70%; }
+
+        /* --- OVERLAY MENU --- */
+        .overlay-menu {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
+            background-color: #ffffff; color: #000000; z-index: 999;
+            display: flex; flex-direction: column; padding: 40px 5%;
+            opacity: 0; visibility: hidden; transition: var(--transition);
+            transform: translateY(-20px);
+        }
+        .overlay-menu.active { opacity: 1; visibility: visible; transform: translateY(0); }
+        
+        .menu-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 60px; }
+        .logo-dark { font-size: 1.5rem; font-weight: 800; color: #000; }
+        .logo-dark span { color: var(--accent-blue); }
+        
+        .close-btn {
+            background-color: #f5f5f7; width: 45px; height: 45px;
+            display: flex; align-items: center; justify-content: center;
+            border-radius: 50%; cursor: pointer; font-size: 1.8rem; color: #000;
+            transition: var(--transition);
+        }
+        .close-btn:hover { background-color: #e2e2e5; transform: rotate(90deg); }
+
+        .menu-list { list-style: none; }
+        .menu-list a { 
+            display: block; padding: 25px 0; font-size: 2.5rem; font-weight: 700; 
+            color: #000; text-decoration: none; border-bottom: 1px solid #eee;
+            transition: var(--transition);
+        }
+        .menu-list a:hover { color: var(--accent-blue); padding-left: 20px; }
+
+        /* --- HERO SECTION --- */
+        .hero { text-align: center; padding: 100px 20px 60px; max-width: 900px; margin: 0 auto; }
+        .hero h1 { 
+            font-size: clamp(3rem, 8vw, 4.5rem); 
+            font-weight: 800; 
+            margin-bottom: 20px; 
+            letter-spacing: -2px;
+            background: linear-gradient(to bottom, #fff 60%, var(--accent-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .hero p { color: var(--text-dim); font-size: 1.2rem; max-width: 550px; margin: 0 auto; font-weight: 300; }
+
+        /* --- DASHBOARD IMAGE SECTION --- */
+        .dashboard-container { 
+            position: relative; width: 100%; max-width: 1300px; margin: 0 auto; padding: 0 40px; 
+            perspective: 1000px;
+        }
+        .fade-overlay { 
+            position: absolute; top: 0; left: 0; width: 100%; height: 200px; 
+            background: linear-gradient(to bottom, var(--bg-dark) 5%, transparent 100%); 
+            pointer-events: none; z-index: 2;
+        }
+        .dashboard-img {
+            width: 100%; height: auto; border-radius: 12px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 50px 100px -20px rgba(0,102,255,0.15);
+            transition: var(--transition);
+        }
+        .dashboard-container:hover .dashboard-img { border-color: var(--accent-blue); transform: scale(1.01); }
+
+        /* --- FEATURES TEXT --- */
+        .features-text { text-align: center; padding: 120px 20px 80px; }
+        .feature-block { margin-bottom: 80px; }
+        .feature-block h2 { font-size: 2.2rem; font-weight: 700; margin-bottom: 20px; letter-spacing: -0.5px; }
+        .feature-block p { color: var(--text-dim); max-width: 550px; margin: 0 auto; font-size: 1.1rem; }
+
+        /* --- GRID CARDS SECTION --- */
+        .info-grid {
+            display: grid; gap: 25px; max-width: 1200px; margin: 0 auto 120px; padding: 0 40px;
+            grid-template-columns: 1fr;
+        }
+        @media (min-width: 768px) { .info-grid { grid-template-columns: repeat(3, 1fr); } }
+
+        .card {
+            display: flex; flex-direction: column; justify-content: flex-start;
+            border: 1px solid var(--border-color); padding: 40px 30px; 
+            background-color: var(--card-bg); border-radius: 16px;
+            text-decoration: none; color: white; transition: var(--transition);
+            text-align: center; position: relative; overflow: hidden;
+        }
+        .card::before {
+            content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 2px;
+            background: var(--accent-blue); transform: scaleX(0); transition: var(--transition);
+        }
+        .card:hover { transform: translateY(-10px); border-color: #333; box-shadow: 0 20px 40px rgba(0,0,0,0.5); }
+        .card:hover::before { transform: scaleX(1); }
+        .card h3 { font-size: 1.4rem; margin-bottom: 15px; font-weight: 700; color: var(--accent-blue); }
+        .card p { color: var(--text-dim); font-size: 0.95rem; line-height: 1.7; }
+
+        /* --- FOOTER --- */
+        footer {
+            padding: 80px 5%; background-color: #000;
+            border-top: 1px solid var(--border-color);
+            color: #555; font-size: 0.8rem;
+        }
+        .footer-content { max-width: 1200px; margin: 0 auto; text-align: center; }
+        .copyright {
+            font-weight: 600; color: #eee; margin-bottom: 25px; display: block;
+            font-size: 1rem; letter-spacing: 1px;
+        }
+        .footer-content p { margin-bottom: 20px; line-height: 1.8; max-width: 900px; margin-left: auto; margin-right: auto; }
+        .footer-content a { color: var(--accent-blue); text-decoration: none; transition: 0.3s; }
+        .footer-content a:hover { text-decoration: underline; color: #fff; }
+
+    </style>
+</head>
+<body>
+
+  <nav>
+    <div class="logo">
+      <img src="https://uploads.onecompiler.io/448e3fn6s/448e3m5fv/bitvavologo-white.png" alt="Bitvavo Logo" style="height: 50px;"/>
+    </div>
+    <div class="menu-icon" onclick="toggleMenu()">
+        <div></div><div></div><div></div>
+    </div>
+  </nav>
+
+    <div id="mobileOverlay" class="overlay-menu">
+        <div class="menu-header">
+            <div class="logo-dark"><span>
+            </span> bitvavo</div>
+            <div class="close-btn" onclick="toggleMenu()">&times;</div>
+        </div>
+        <ul class="menu-list">
+            <li><a href="https://mr26yfhfjb.skywork.website/">Orientation</a></li>
+            <li><a href="https://v46t8qhqvh.skywork.website">Advanced</a></li>
+            <li><a href="https://ieyea88k3x.skywork.website">Masterclass</a></li>
+        </ul>
+    </div>
+
+    <header class="hero">
+        <h1>Bitvavo Pro Trade</h1>
+        <p>Elevate your strategy with our professional-grade trading interface designed for precision.</p>
+    </header>
+
+    <section class="dashboard-container">
+        <div class="fade-overlay"></div>
+        <img 
+            src="https://bitvavo.com/assets/pro/optimized/pro-panel-1-1920w.avif" 
+            alt="Bitvavo Pro Interface" 
+            class="dashboard-img"
+        >
+    </section>
+
+    <section class="features-text">
+        <div class="feature-block">
+            <h2>USDC pairs with up to 0.05% fees</h2>
+            <p>Access the lowest fee tiers in the market on major USDC pairs, built for high-frequency trading.</p>
+        </div>
+        <div class="feature-block">
+            <h2>Professional-grade interface</h2>
+            <p>Experience seamless keyboard navigation, modular layouts, and integrated chart order management.</p>
+        </div>
+    </section>
+
+    <section class="info-grid">
+        <a href="https://mr26yfhfjb.skywork.website/" class="card">
+            <h3>Orientation</h3>
+            <p>Master the essentials of the Pro interface and optimize your workspace for speed.</p>
+        </a>
+        <a href="https://v46t8qhqvh.skywork.website" class="card">
+            <h3>Advanced</h3>
+            <p>Leverage advanced order types and deep liquidity analysis to stay ahead of the market.</p>
+        </a>
+        <a href="https://ieyea88k3x.skywork.website" class="card">
+            <h3>Masterclass</h3>
+            <p>Directly influenced by professional traders to provide the ultimate edge in execution.</p>
+        </a>
+    </section>
+
+    <footer>
+        <div class="footer-content">
+            <span class="copyright">Bitvavo B.V. // 2025</span>
+            
+            <p>
+                Trading digital assets involves significant risks. Digital assets are highly volatile and you may lose some or all of your investment. The information on this page does not constitute advice, and should not be relied upon as such. Bitvavo is authorized as a crypto-asset service provider under Regulation (EU) 2023/1114 (MiCA) by the Autoriteit Financiële Markten (AFM). More info can be found in our <a href="#">Risk Disclosure</a>.
+            </p>
+
+            <p>
+                Bitvavo is registered at the Dutch Chamber of Commerce, number 68743424.
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        function toggleMenu() {
+            const menu = document.getElementById('mobileOverlay');
+            menu.classList.toggle('active');
+        }
+    </script>
+
+</body>
+</html>
